@@ -21,7 +21,7 @@ public class pruebas {
         //needleman.MostrarMatrizF();
         needleman.MostrarMatrizS();
         needleman.crearMatrizF();
-        needleman.MostrarMatrizF();
+        needleman.MostrarMatrizF(); 
         needleman.alineamiento();
     }
     
