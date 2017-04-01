@@ -19,6 +19,9 @@ public class AlgoritmoNeedlemanWunsch {
     private char[] secuenciaB;
     private int[] secA;
     private int[] secB;
+    private int Score;
+    private String AlineamientoA;
+    private String AlineamientoB;
 
     public char[] getSecuenciaA() {
         return secuenciaA;
@@ -110,6 +113,31 @@ public class AlgoritmoNeedlemanWunsch {
         this.m = m;
     }
 
+    public int getScore() {
+        return Score;
+    }
+
+    public void setScore(int Score) {
+        this.Score = Score;
+    }
+
+    public String getAlineamientoA() {
+        return AlineamientoA;
+    }
+
+    public void setAlineamientoA(String AlineamientoA) {
+        this.AlineamientoA = AlineamientoA;
+    }
+
+    public String getAlineamientoB() {
+        return AlineamientoB;
+    }
+
+    public void setAlineamientoB(String AlineamientoB) {
+        this.AlineamientoB = AlineamientoB;
+    }
+    
+
     public void inicializacion(char[] cadena1, char[] cadena2) {
         
         secuenciaA = cadena1;
@@ -138,15 +166,13 @@ public class AlgoritmoNeedlemanWunsch {
 
         for (int i = 1; i < m; i++) {
             for (int j = 1; j < n; j++) {
-                //System.out.println("i"+i+" "+seqB[i - 1]);
-                //System.out.println("j"+j+" "+seqA[j - 1]);
-                //int scoreDiagonal = matrizF[i - 1][j - 1] 
-                //int scoreDiagonal = matrizF[i - 1][j - 1] + calcularS(secuenciaB[i - 1], secuenciaA[j - 1]);
                 int scoreDiagonal = matrizF[i - 1][j - 1] + calcularS(secA[i - 1], secB[j - 1]);
                 int scoreIzquierda = matrizF[i - 1][j] + gap;
                 int scoreArriba = matrizF[i][j - 1] + gap;
                 //System.out.println("scoreDiagonal =");
                 matrizF[i][j] = Math.max(Math.max(scoreDiagonal, scoreIzquierda), scoreArriba);
+                //
+                this.setScore(matrizF[i][j]);
             }
         }
 
@@ -167,7 +193,7 @@ public class AlgoritmoNeedlemanWunsch {
     }
 
     public void MostrarMatrizF() {
-        System.out.println("Mostrar matris" + m);
+        System.out.println("Mostrar matriz" + m);
         for (int i = 0; i < m; i++) {
             System.out.print("|");
             for (int j = 0; j < n; j++) {
@@ -207,20 +233,12 @@ public class AlgoritmoNeedlemanWunsch {
         return valorPosicion;
     }
 
-    /*
-    public int calcularS(char caracter1, char caracter2) {
-        int i = caracterS(caracter1) - 1;
-        int j = caracterS(caracter2) - 1;
-        int valorPosicion = matrizS[i][j];
-        //System.out.println("i " + i + " j " + j + " valorPosicion " + valorPosicion);
-        return valorPosicion;
-    }
-     */
     //arreglar
     public int[] convertirSecuencia(char[] secuencia) {
         int[] secuenciaValor = new int[secuencia.length];
         for (int i = 0; i < secuencia.length; i++) {
             secuenciaValor[i] = caracterS(secuencia[i]);
+            System.out.println("secuencia="+secuencia[i]+" valor="+caracterS(secuencia[i])+"\n");
         }
         return secuenciaValor;
     }
@@ -233,50 +251,52 @@ public class AlgoritmoNeedlemanWunsch {
         int score =0,scoreDiag=0,scoreUp=0,scoreLeft=0;
         String AlignmentA = "";
         String AlignmentB = "";
+        
+        //Mientras las 2 matricez se pueden recorrer
         while (i > 0 && j > 0){
-   {
-       score = matrizF[i][j];
-       scoreDiag = matrizF[i-1][j-1]; 
-       scoreUp = matrizF[i][j - 1];
-       scoreLeft = matrizF[i-1][j];
-       if(score == scoreLeft + gap){
-           AlignmentA = secuenciaA[i-1] + AlignmentA;
-           AlignmentB = "-" + AlignmentB;
-           i = i - 1;
-       } 
-       else{
-           if(score == scoreUp+gap){
-               AlignmentA = "-" + AlignmentA;
-               AlignmentB = secuenciaB[j-1] + AlignmentB;
-               j = j - 1;
-           }else{
-               if(score==scoreDiag+calcularS(secA[i-1], secB[j-1])){
-                   AlignmentA = secuenciaA[i-1] + AlignmentA;
-                   AlignmentB = secuenciaB[j-1] + AlignmentB;
-                   i = i - 1;
-                   j = j - 1;
-               }
-           }
-       }
-            
-   }}    
-               
-               
-       while (i > 0) {
+            score = matrizF[i][j];
+            scoreDiag = matrizF[i-1][j-1]; 
+            scoreLeft = matrizF[i][j - 1];
+            scoreUp = matrizF[i-1][j];
+            //
+            if(score == scoreLeft + gap){
+                AlignmentA = "-" + AlignmentA;
+                AlignmentB = secuenciaB[j-1] + AlignmentB;
+                j = j - 1;
+            } 
+            else{
+                if(score == scoreUp+gap){
+                    AlignmentA = secuenciaA[i-1] + AlignmentA;
+                    AlignmentB = "-" + AlignmentB;
+                    i = i - 1;
+                }else{
+                        AlignmentA = secuenciaA[i-1] + AlignmentA;
+                        AlignmentB = secuenciaB[j-1] + AlignmentB;
+                        i = i - 1;
+                        j = j - 1;
+                }
+            }
+
+        }    
+        //Si la segunda no se puede recorrer mas por terminacion de caracteres
+        while (i > 0) {
            AlignmentA = secuenciaA[i-1] + AlignmentA;
            AlignmentB = "-" + AlignmentB;
            i = i - 1;
         }
+        //Si la primer no se puede recorrer mas por terminacion de caracteres
         while (j > 0) {
             AlignmentA = "-" + AlignmentA;
             AlignmentB = secuenciaB[j-1] + AlignmentB;
             j = j - 1;
         }
         
-       
-       System.out.println(AlignmentA + "\n");
+        this.setAlineamientoA(AlignmentA);
+        this.setAlineamientoB(AlignmentB);
+        System.out.println("\n");
+        System.out.println(AlignmentA);
         System.out.println(AlignmentB + "\n");
        
-   }   //matrizF[i - 1][j - 1] + calcularS(secB[i - 1], secA[j - 1])
+   }  
        
 }
